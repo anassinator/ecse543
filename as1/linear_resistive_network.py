@@ -26,8 +26,8 @@ class LinearResistiveNetwork(object):
             A[start, elem_index] = -1
             elem_index += 1
 
-        # Delete last row to get reduced incidence matrix.
-        A = A[:-1]
+        # Delete the first row to get reduced incidence matrix.
+        A = A[1:]
 
         return A
 
