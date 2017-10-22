@@ -170,6 +170,12 @@ class Matrix2D(object):
 
         return self.map(lambda x: op(x, other))
 
+    def tosparse(self):
+        return SparseMatrix2D(self._arr, self._rows, self._cols, self._dtype)
+
+    def tomatrix(self):
+        return self.clone()
+
     def tolist(self):
         return copy.deepcopy(self._arr)
 
@@ -378,6 +384,12 @@ class SparseMatrix2D(Matrix2D):
             return m
         else:
             return super().map(f)
+
+    def tosparse(self):
+        return self.clone()
+
+    def tomatrix(self):
+        return Matrix2D(self._arr, self._rows, self._cols, self._dtype)
 
 
 def slice_to_range(s):
