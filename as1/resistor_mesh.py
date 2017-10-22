@@ -23,14 +23,14 @@ def resistor_mesh(rows, cols, resistance, test_voltage=10.):
 
     if test_voltage:
         m += 1
-        branches.append((0, n - 1, 0., resistance, test_voltage))
+        branches.append((n - 1, 0, 0., resistance, test_voltage))
 
     return LinearResistiveNetwork(n, m, branches)
 
 
 def solve_resistance(network, resistance, test_voltage=10.):
     v = network.solve_for_voltages()
-    v_measured = v[0]
+    v_measured = v[-1]
     z = v_measured * resistance / (test_voltage - v_measured)
     return z
 
