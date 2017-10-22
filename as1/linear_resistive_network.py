@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
 import sys
-from matrix import Matrix2D
 from cholesky import cholesky_solve
+from matrix import Matrix2D, SparseMatrix2D
 
 
 class LinearResistiveNetwork(object):
 
-    def __init__(self, n, m, branches):
+    def __init__(self, n, m, branches, sparse=True):
         self.n = n
         self.m = m
         self.branches = branches
+
+        self._matrix_class = SparseMatrix2D if sparse else Matrix2D
 
         self.A = self._A()
         self.Y = self._Y()
@@ -19,7 +21,7 @@ class LinearResistiveNetwork(object):
 
     def _A(self):
         elem_index = 0
-        A = Matrix2D.zeros(self.n, self.m, dtype=int)
+        A = self._matrix_class.zeros(self.n, self.m, dtype=int)
         for branch in self.branches:
             start, end = branch[:2]
             A[end, elem_index] = 1
@@ -32,7 +34,7 @@ class LinearResistiveNetwork(object):
         return A
 
     def _Y(self):
-        Y = Matrix2D.zeros(self.m, self.m)
+        Y = SparseMatrix2D.zeros(self.m, self.m)
         for i, branch in enumerate(self.branches):
             r_value = branch[3]
             if r_value:
@@ -40,14 +42,14 @@ class LinearResistiveNetwork(object):
         return Y
 
     def _J(self):
-        J = Matrix2D.zeros(self.m, 1)
+        J = self._matrix_class.zeros(self.m, 1)
         for i, branch in enumerate(self.branches):
             j_value = branch[2]
             J[i, 0] = j_value
         return J
 
     def _E(self):
-        E = Matrix2D.zeros(self.m, 1)
+        E = self._matrix_class.zeros(self.m, 1)
         for i, branch in enumerate(self.branches):
             e_value = branch[4]
             E[i, 0] = e_value
