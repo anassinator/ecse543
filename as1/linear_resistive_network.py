@@ -5,96 +5,98 @@ from matrix import Matrix2D
 from cholesky import cholesky_solve
 
 
-def incidence_matrix(n, m, branches):
-    elem_index = 0
-    incidence = Matrix2D.zeros(n, m, dtype=int)
-    for branch in branches:
-        start, end = branch[:2]
-        incidence[end, elem_index] = 1
-        incidence[start, elem_index] = -1
-        elem_index += 1
+class LinearResistiveNetwork(object):
 
-    return incidence
+    def __init__(self, n, m, branches):
+        self.n = n
+        self.m = m
+        self.branches = branches
+
+        self.A = self._A()
+        self.Y = self._Y()
+        self.J = self._J()
+        self.E = self._E()
+
+    def _A(self):
+        elem_index = 0
+        A = Matrix2D.zeros(self.n, self.m, dtype=int)
+        for branch in self.branches:
+            start, end = branch[:2]
+            A[end, elem_index] = 1
+            A[start, elem_index] = -1
+            elem_index += 1
+
+        # Delete last row to get reduced incidence matrix.
+        A = A[:-1]
+
+        return A
+
+    def _Y(self):
+        Y = Matrix2D.zeros(self.m, self.m)
+        for i, branch in enumerate(self.branches):
+            r_value = branch[3]
+            if r_value:
+                Y[i, i] = 1.0 / r_value
+        return Y
+
+    def _J(self):
+        J = Matrix2D.zeros(self.m, 1)
+        for i, branch in enumerate(self.branches):
+            j_value = branch[2]
+            J[i, 0] = j_value
+        return J
+
+    def _E(self):
+        E = Matrix2D.zeros(self.m, 1)
+        for i, branch in enumerate(self.branches):
+            e_value = branch[4]
+            E[i, 0] = e_value
+        return E
+
+    def solve_for_voltages(self):
+        left_hand_side = (self.A * self.Y) * self.A.T
+        right_hand_side = self.A * (self.J - self.Y * self.E)
+
+        v = cholesky_solve(left_hand_side, right_hand_side)
+        return v.flatten()
+
+    @staticmethod
+    def from_file(f):
+        def parse_count(line):
+            return int(line.strip().split(" ")[1])
+
+        def parse_branch(line):
+            values = line.strip().split(" ")
+            start, end = map(int, values[:2])
+            j_value, r_value, e_value = map(float, values[2:])
+            return start, end, j_value, r_value, e_value
+
+        # Parse node and branch count.
+        n = parse_count(f.readline())
+        m = parse_count(f.readline())
+
+        # Parse branches.
+        branches = [
+            parse_branch(f.readline())
+            for _ in range(m)
+        ]
+
+        return LinearResistiveNetwork(n, m, branches)
 
 
-def Y_matrix(n, m, branches):
-    Y = Matrix2D.zeros(m, m)
-    for i, branch in enumerate(branches):
-        r_value = branch[3]
-        if r_value:
-            Y[i, i] = 1.0 / r_value
-    return Y
-
-
-def J_matrix(n, m, branches):
-    J = Matrix2D.zeros(m, 1)
-    for i, branch in enumerate(branches):
-        j_value = branch[2]
-        J[i, 0] = j_value
-    return J
-
-
-def E_matrix(n, m, branches):
-    E = Matrix2D.zeros(m, 1)
-    for i, branch in enumerate(branches):
-        e_value = branch[4]
-        E[i, 0] = e_value
-    return E
-
-
-def solve(n, m, branches):
-    A = incidence_matrix(n, m, branches)
-    Y = Y_matrix(n, m, branches)
-    J = J_matrix(n, m, branches)
-    E = E_matrix(n, m, branches)
-
-    # Delete last row to get reduced incidence matrix.
-    A = A[:-1]
-
-    left_hand_side = (A * Y) * A.T
-    right_hand_side = A * (J - Y * E)
-
-    v = cholesky_solve(left_hand_side, right_hand_side)
-    return v
-
-
-def parse_count(line):
-    return int(line.strip().split(" ")[1])
-
-
-def parse_branch(line):
-    start, end, j_value, r_value, e_value = line.strip().split(" ")
-    return int(start), int(end), float(j_value), float(r_value), float(e_value)
-
-
-def parse_file(f):
-    # Parse node and branch count.
-    n = parse_count(f.readline())
-    m = parse_count(f.readline())
-
-    # Parse branches.
-    branches = [
-        parse_branch(f.readline())
-        for _ in range(m)
-    ]
-
-    return n, m, branches
-
-
-def print_solve(n, m, branches):
-    print("node count:", n)
-    print("branch count:", m)
-    v = solve(n, m, branches)
-    print("voltages", v.flatten())
+def print_solve(network):
+    print("node count:", network.n)
+    print("branch count:", network.m)
+    print("voltages", network.solve_for_voltages())
 
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        n, m, branches = parse_file(sys.stdin)
-        print_solve(n, m, branches)
+        network = LinearResistiveNetwork.from_file(sys.stdin)
+        print_solve(network)
     else:
         for filename in sys.argv[1:]:
             print(filename)
             with open(filename) as f:
-                n, m, branches = parse_file(f)
-                print_solve(n, m, branches)
+                network = LinearResistiveNetwork.from_file(f)
+                print_solve(network)
