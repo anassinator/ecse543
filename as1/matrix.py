@@ -381,6 +381,8 @@ class SparseMatrix2D(Matrix2D):
                     value = f(m._elements[x][y])
                     m._elements[x][y] = value
                     m._arr[x][y] = value
+                    if value == 0:
+                        del m._elements[x][y]
             return m
         else:
             return super().map(f)
