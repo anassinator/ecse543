@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 
 import math
-from matrix import Matrix2D
+from matrix import Matrix2D, SparseMatrix2D
 
 
-def cholesky_solve(A, b):
+def cholesky_solve(A, b, half_bandwidth=None):
     """Solves for x in Ax=b by Cholesky decomposition.
 
     Args:
         A: Real, symmetric, positive-definite matrix of order n.
         b: Column vector of size n.
+        half_bandwidth: Half bandwidth for banded solution, optional.
 
     Returns:
         Column vector x of size n.
@@ -19,22 +20,28 @@ def cholesky_solve(A, b):
             A.shape))
 
     n = A.rows
-    L = A.clone()
+    A = A.clone()
+    L = SparseMatrix2D.zeros(n, n)
     y = b.clone()
 
     for j in range(n):
-        if L[j, j] <= 0:
+        if A[j, j] <= 0:
             raise ValueError("matrix is not positive-definite")
 
-        L[j, j] = math.sqrt(L[j, j])
+        L[j, j] = math.sqrt(A[j, j])
         y[j, 0] /= L[j, j]
 
         for i in range(j + 1, n):
-            L[i, j] = L[i, j] / L[j, j]
+            if half_bandwidth and i > j + half_bandwidth + 1:
+                break
+
+            L[i, j] = A[i, j] / L[j, j]
             y[i, 0] -= L[i, j] * y[j, 0]
 
             for k in range(j + 1, i + 1):
-                L[i, k] -= L[i, j] * L[k, j]
+                if half_bandwidth and k > j + half_bandwidth:
+                    break
+                A[i, k] -= L[i, j] * L[k, j]
 
     x = Matrix2D.zeros(n, 1)
     for i in range(n - 1, -1, -1):
