@@ -101,3 +101,4 @@ if __name__ == "__main__":
             with open(filename) as f:
                 network = LinearResistiveNetwork.from_file(f)
                 print_solve(network)
+            print("")
