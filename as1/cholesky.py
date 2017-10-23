@@ -56,28 +56,37 @@ def cholesky_solve(A, b, half_bandwidth=None):
 
 
 if __name__ == "__main__":
+    import random
+
     def allclose(x1, x2, epsilon=1e-6):
         return all(map(lambda x: abs(x[0] - x[1]) <= epsilon, zip(x1, x2)))
 
     def test_solve(A, b, expected_x):
-        print("A = {}".format(A.tolist()))
-        print("b = {}".format(b.flatten()))
+        print("A =")
+        A.print()
+        print("b =")
+        b.print()
         x = cholesky_solve(A, b)
-        print("x = {}".format(x.flatten()))
+        print("x =")
+        x.print()
 
         if allclose(x.flatten(), expected_x.flatten()):
             print("correct")
         else:
             print("incorrect: expected {}".format(expected_x.flatten()))
 
-    # Test with n = 3
-    A = Matrix2D([[25, 15, -5], [15, 18, 0], [-5, 0, 11]])
-    x = Matrix2D([[1], [2], [3]])
-    b = A.dot(x)
-    test_solve(A, b, x)
+        print("")
 
-    # Test with n = 3
-    A = Matrix2D([[25, 15, -5], [15, 18, 0], [-5, 0, 11]])
-    x = Matrix2D([[0], [0], [0]])
-    b = A.dot(x)
-    test_solve(A, b, x)
+    def random_symmetric_positive_definite_matrix(n):
+        A = Matrix2D.zeros(n, n).map(lambda x: random.random())
+        return A * A.T
+
+    def random_vector(n):
+        return Matrix2D.zeros(n, 1).map(lambda x: random.random())
+
+    for n in range(2, 6):
+        print("N =", n)
+        A = random_symmetric_positive_definite_matrix(n)
+        x = random_vector(n)
+        b = A.dot(x)
+        test_solve(A, b, x)
