@@ -222,6 +222,22 @@ class Matrix2D(object):
     def clone(self):
         return self.__class__(copy.deepcopy(self._arr), self._rows, self._cols)
 
+    def print(self):
+        print("┌", end="")
+        for i in range(self.cols):
+            print("       ", end=" ")
+        print(" ┐")
+
+        for x in range(self.rows):
+            print("│", end=" ")
+            for y in range(self.cols):
+                print("{0:>7.3f}".format(self._arr[x][y]), end=" ")
+            print("│")
+        print("└", end="")
+        for i in range(self.cols):
+            print("       ", end=" ")
+        print(" ┘")
+
     @classmethod
     def zeros(cls, rows, cols, dtype=float):
         arr = [[dtype(0.) for _ in range(cols)] for _ in range(rows)]
