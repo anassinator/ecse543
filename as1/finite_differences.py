@@ -26,7 +26,7 @@ class ElectrostaticProblem(object):
         top_right = self.inner_conductor.top_right
         right, top = discretized.to_grid_coordinate(*top_right)
 
-        discretized[left:right + 1, bottom:top + 1] = self.inner_voltage
+        discretized[bottom:top + 1, left:right + 1] = self.inner_voltage
 
         return discretized
 
@@ -35,8 +35,8 @@ class UniformlyDiscretizedProblem(object):
 
     def __init__(self, width, height, h):
         self.h = h
-        self.rows = int(width // h) + 1
-        self.cols = int(height // h) + 1
+        self.rows = int(width / h) + 1
+        self.cols = int(height / h) + 1
         self.grid = Matrix2D.zeros(self.rows, self.cols)
 
     def __getitem__(self, idx):
@@ -49,21 +49,21 @@ class UniformlyDiscretizedProblem(object):
         return x in (0, self.rows - 1) or y in (0, self.cols - 1)
 
     def to_grid_coordinate(self, x, y):
-        i = max(0, min(int(x // self.h), self.rows - 1))
-        j = max(0, min(int(y // self.h), self.cols - 1))
+        i = max(0, min(int(y / self.h), self.cols - 1))
+        j = max(0, min(int(x / self.h), self.rows - 1))
         return i, j
 
     def to_original_coordinate(self, i, j):
-        return float(i * self.h), float(j * self.h)
+        return float(j * self.h), float(i * self.h)
 
 
 def sor(problem, w, h, tolerance=1e-5):
     grid = problem.uniformly_discretize(h)
 
-    inner_x, inner_y = grid.to_grid_coordinate(
+    inner_y, inner_x = grid.to_grid_coordinate(
         *problem.inner_conductor.bottom_left)
 
-    residual = 1.0
+    residual = float("inf")
     iterations = 0
     while residual > tolerance:
         iterations += 1
@@ -88,7 +88,7 @@ def sor(problem, w, h, tolerance=1e-5):
 
                 grid[x, y] = (1 - w) * grid[x, y] + (w / 4) * s
 
-        residual = 0
+        residual = 0.0
         for x in range(1, grid.rows - 1):
             for y in range(1, grid.cols - 1):
                 local_residual = -4 * grid[x, y]
@@ -135,11 +135,11 @@ if __name__ == "__main__":
     def print_solution(discretized, iterations):
         coord = discretized.to_grid_coordinate(*TARGET_COORDINATE)
         v = discretized[coord]
-        print("potential at", TARGET_COORDINATE, "=", v, "V")
+        print("voltage at", TARGET_COORDINATE, "=", v, "V")
         print("iterations", iterations)
 
     print("SOR")
-    print("variying w...")
+    print("varying w...")
     iterations_per_w = {}
     for m in range(10, 20):
         w = m / 10
@@ -149,15 +149,16 @@ if __name__ == "__main__":
         discretized, iterations = sor(problem, w, h)
         print_solution(discretized, iterations)
         iterations_per_w[w] = iterations
-    print("")
+        discretized.grid.print()
+        print("")
 
     # Minimum iterations from previous loop.
     min_w = min(iterations_per_w, key=lambda x: iterations_per_w[x])
-    print("minimum w =", min_w)
+    print("minimum w =", min_w, "@", iterations_per_w[min_w], "iterations")
     print("")
 
     print("SOR")
-    print("variying h...")
+    print("varying h...")
     for m in range(5):
         w = min_w
         h = 0.02 / 2**m
