@@ -40,18 +40,21 @@ if __name__ == "__main__":
     import time
 
     def print_solution_test(N, resistance, banded):
-        print("N", N)
         print("Banded", banded)
         network = resistor_mesh(2 * N, N, resistance)
         start = time.time()
         total_resistance = solve_resistance(N, network, resistance,
                                             banded=banded)
         end = time.time()
-        print("R_eq", total_resistance)
         print("time", end - start)
+
+        return total_resistance
 
     resistance = 1000.0
     for N in range(2, 11):
-        print_solution_test(N, resistance, True)
-        print_solution_test(N, resistance, False)
+        print("N", N)
+        total_resistance_banded = print_solution_test(N, resistance, True)
+        total_resistance_unbanded = print_solution_test(N, resistance, False)
+        print("R_eq", total_resistance_banded)
+        assert(total_resistance_banded == total_resistance_unbanded)
         print("")
