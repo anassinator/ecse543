@@ -15,9 +15,10 @@ def cholesky_solve(A, b, half_bandwidth=None):
     Returns:
         Column vector x of size n.
     """
-    if not A.issquare():
-        raise ValueError("incompatible shape, matrix is not square: {}".format(
-            A.shape))
+    if not A.is_symmetric():
+        raise ValueError("matrix is not symmetric")
+    if not A.is_square():
+        raise ValueError("matrix is not square: {}".format(A.shape))
 
     n = A.rows
     A = A.clone()
@@ -57,7 +58,6 @@ def cholesky_solve(A, b, half_bandwidth=None):
 if __name__ == "__main__":
     def allclose(x1, x2, epsilon=1e-6):
         return all(map(lambda x: abs(x[0] - x[1]) <= epsilon, zip(x1, x2)))
-
 
     def test_solve(A, b, expected_x):
         print("A = {}".format(A.tolist()))

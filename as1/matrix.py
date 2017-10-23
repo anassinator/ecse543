@@ -54,8 +54,11 @@ class Matrix2D(object):
     def T(self):
         return self.transpose()
 
-    def issquare(self):
+    def is_square(self):
         return self._rows == self._cols
+
+    def is_symmetric(self):
+        return self.T == self
 
     def __getitem__(self, idx):
         if isinstance(idx, int):
