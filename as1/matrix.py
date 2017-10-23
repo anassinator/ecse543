@@ -293,7 +293,7 @@ class SparseMatrix2D(Matrix2D):
                 }
 
         if isinstance(idx, slice):
-            for x in slice_to_range(idx):
+            for x in _slice_to_range(idx):
                 self._elements[x] = {
                     y: self._arr[x][y]
                     for y in self._cols
@@ -316,7 +316,7 @@ class SparseMatrix2D(Matrix2D):
                 }
                 return
 
-            for x in slice_to_range(idx):
+            for x in _slice_to_range(idx):
                 self._elements[x] = {
                     y: self._arr[x][y]
                     for y in self._cols
@@ -394,7 +394,7 @@ class SparseMatrix2D(Matrix2D):
         return Matrix2D(self._arr, self._rows, self._cols, self._dtype)
 
 
-def slice_to_range(s):
+def _slice_to_range(s):
     start = s.start if s.start is not None else 0
     stop = s.stop if s.stop is not None else -1
     step = s.step if s.start is not None else 1

@@ -86,13 +86,12 @@ class LinearResistiveNetwork(object):
         return LinearResistiveNetwork(n, m, branches)
 
 
-def print_solve(network):
-    print("node count:", network.n)
-    print("branch count:", network.m)
-    print("voltages", network.solve_for_voltages())
-
-
 if __name__ == "__main__":
+    def print_solve(network):
+        print("node count:", network.n)
+        print("branch count:", network.m)
+        print("voltages", network.solve_for_voltages())
+
     if len(sys.argv) == 1:
         network = LinearResistiveNetwork.from_file(sys.stdin)
         print_solve(network)

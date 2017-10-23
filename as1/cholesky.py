@@ -54,23 +54,22 @@ def cholesky_solve(A, b, half_bandwidth=None):
     return x
 
 
-def allclose(x1, x2, epsilon=1e-6):
-    return all(map(lambda x: abs(x[0] - x[1]) <= epsilon, zip(x1, x2)))
-
-
-def test_solve(A, b, expected_x):
-    print("A = {}".format(A.tolist()))
-    print("b = {}".format(b.flatten()))
-    x = cholesky_solve(A, b)
-    print("x = {}".format(x.flatten()))
-
-    if allclose(x.flatten(), expected_x.flatten()):
-        print("correct")
-    else:
-        print("incorrect: expected {}".format(expected_x.flatten()))
-
-
 if __name__ == "__main__":
+    def allclose(x1, x2, epsilon=1e-6):
+        return all(map(lambda x: abs(x[0] - x[1]) <= epsilon, zip(x1, x2)))
+
+
+    def test_solve(A, b, expected_x):
+        print("A = {}".format(A.tolist()))
+        print("b = {}".format(b.flatten()))
+        x = cholesky_solve(A, b)
+        print("x = {}".format(x.flatten()))
+
+        if allclose(x.flatten(), expected_x.flatten()):
+            print("correct")
+        else:
+            print("incorrect: expected {}".format(expected_x.flatten()))
+
     # Test with n = 3
     A = Matrix2D([[25, 15, -5], [15, 18, 0], [-5, 0, 11]])
     x = Matrix2D([[1], [2], [3]])
