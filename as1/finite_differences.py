@@ -102,6 +102,57 @@ def sor(problem, w, h, tolerance=1e-5):
     return grid, iterations
 
 
+def jacobi(problem, h, tolerance=1e-5):
+    grid = problem.uniformly_discretize(h)
+    grid_n = problem.uniformly_discretize(h)
+
+    inner_y, inner_x = grid.to_grid_coordinate(
+        *problem.inner_conductor.bottom_left)
+
+    residual = float("inf")
+    iterations = 0
+    while residual > tolerance:
+        iterations += 1
+        for x in range(1, grid.rows):
+            for y in range(1, grid.cols):
+                if x >= inner_x and y >= inner_y:
+                    continue
+
+                if x == grid.rows - 1 and y == grid.cols - 1:
+                    # Deal with top right corner.
+                    # Shouldn't happen since the conductor is there.
+                    s = 2 * grid[x - 1, y] + 2 * grid[x, y - 1]
+                elif x == grid.rows - 1:
+                    # Deal with right edge.
+                    s = 2 * grid[x - 1, y] + grid[x, y + 1] + grid[x, y - 1]
+                elif y == grid.cols - 1:
+                    # Deal with top edge.
+                    s = grid[x + 1, y] + grid[x - 1, y] + 2 * grid[x, y - 1]
+                else:
+                    s = grid[x + 1, y] + grid[x - 1, y] + \
+                        grid[x, y + 1] + grid[x, y - 1]
+
+                grid_n[x, y] = s / 4
+
+        residual = 0.0
+        for x in range(grid.rows):
+            for y in range(grid.cols):
+                grid[x, y] = grid_n[x, y]
+
+                if grid.on_edge(x, y):
+                    continue
+
+                local_residual = -4 * grid[x, y]
+                local_residual += grid[x + 1, y]
+                local_residual += grid[x - 1, y]
+                local_residual += grid[x, y + 1]
+                local_residual += grid[x, y - 1]
+
+                residual = max(residual, local_residual)
+
+    return grid, iterations
+
+
 if __name__ == "__main__":
     # Conductor sizes.
     OUTER_CONDUCTOR_SIZE = 0.2
@@ -166,4 +217,13 @@ if __name__ == "__main__":
         print("h =", h)
         discretized, iterations = sor(problem, w, h)
         print_solution(discretized, iterations)
-    print("")
+        print("")
+
+    print("Jacobi")
+    print("varying h...")
+    for m in range(5):
+        h = 0.02 / 2**m
+        print("h =", h)
+        discretized, iterations = jacobi(problem, h)
+        print_solution(discretized, iterations)
+        print("")
