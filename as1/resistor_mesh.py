@@ -28,17 +28,30 @@ def resistor_mesh(rows, cols, resistance, test_voltage=10.):
     return LinearResistiveNetwork(n, m, branches)
 
 
-def solve_resistance(network, resistance, test_voltage=10.):
-    v = network.solve_for_voltages()
+def solve_resistance(N, network, resistance, test_voltage=10., banded=True):
+    half_bandwidth = N + 1 if banded else None
+    v = network.solve_for_voltages(half_bandwidth)
     v_measured = v[-1]
     z = v_measured * resistance / (test_voltage - v_measured)
     return z
 
 
 if __name__ == "__main__":
-    resistance = 1000.0
-    for n in range(2, 11):
-        print("N", n)
-        network = resistor_mesh(n, 2 * n, resistance)
-        total_resistance = solve_resistance(network, resistance)
+    import time
+
+    def print_solution_test(N, resistance, banded):
+        print("N", N)
+        print("Banded", banded)
+        network = resistor_mesh(2 * N, N, resistance)
+        start = time.time()
+        total_resistance = solve_resistance(N, network, resistance,
+                                            banded=banded)
+        end = time.time()
         print("R_eq", total_resistance)
+        print("time", end - start)
+
+    resistance = 1000.0
+    for N in range(2, 11):
+        print_solution_test(N, resistance, True)
+        print_solution_test(N, resistance, False)
+        print("")

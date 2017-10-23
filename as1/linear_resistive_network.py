@@ -55,11 +55,11 @@ class LinearResistiveNetwork(object):
             E[i, 0] = e_value
         return E
 
-    def solve_for_voltages(self):
+    def solve_for_voltages(self, half_bandwidth=None):
         left_hand_side = (self.A * self.Y) * self.A.T
         right_hand_side = self.A * (self.J - self.Y * self.E)
 
-        v = cholesky_solve(left_hand_side, right_hand_side)
+        v = cholesky_solve(left_hand_side, right_hand_side, half_bandwidth)
         return v.flatten()
 
     @staticmethod
