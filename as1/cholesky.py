@@ -32,7 +32,7 @@ def cholesky_solve(A, b, half_bandwidth=None):
         y[j, 0] /= L[j, j]
 
         for i in range(j + 1, n):
-            if half_bandwidth and i > j + half_bandwidth + 1:
+            if half_bandwidth and i > j + half_bandwidth:
                 break
 
             L[i, j] = A[i, j] / L[j, j]
