@@ -64,6 +64,7 @@ class LinearResistiveNetwork(object):
 
     @staticmethod
     def from_file(f):
+
         def parse_count(line):
             return int(line.strip().split(" ")[1])
 
@@ -78,15 +79,13 @@ class LinearResistiveNetwork(object):
         m = parse_count(f.readline())
 
         # Parse branches.
-        branches = [
-            parse_branch(f.readline())
-            for _ in range(m)
-        ]
+        branches = [parse_branch(f.readline()) for _ in range(m)]
 
         return LinearResistiveNetwork(n, m, branches)
 
 
 if __name__ == "__main__":
+
     def print_solve(network):
         print("node count:", network.n)
         print("branch count:", network.m)

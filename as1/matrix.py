@@ -184,9 +184,7 @@ class Matrix2D(object):
 
     def flatten(self):
         arr = [
-            self._arr[x][y]
-            for y in range(self.cols)
-            for x in range(self.rows)
+            self._arr[x][y] for y in range(self.cols) for x in range(self.rows)
         ]
         return arr
 
@@ -253,10 +251,8 @@ class Matrix2D(object):
 
     @classmethod
     def eye(cls, n, dtype=float):
-        arr = [
-            [dtype(1.) if i == j else dtype(0.) for i in range(n)]
-            for j in range(n)
-        ]
+        arr = [[dtype(1.) if i == j else dtype(0.) for i in range(n)]
+               for j in range(n)]
         return cls(arr, n, n)
 
 
@@ -307,16 +303,14 @@ class SparseMatrix2D(Matrix2D):
             else:
                 self._elements[idx] = {
                     i: self._arr[idx][i]
-                    for i in self._cols
-                    if self._arr[idx][i] != 0
+                    for i in self._cols if self._arr[idx][i] != 0
                 }
 
         if isinstance(idx, slice):
             for x in _slice_to_range(idx):
                 self._elements[x] = {
                     y: self._arr[x][y]
-                    for y in self._cols
-                    if self._arr[x][y] != 0
+                    for y in self._cols if self._arr[x][y] != 0
                 }
 
         if isinstance(idx, tuple):
@@ -330,16 +324,14 @@ class SparseMatrix2D(Matrix2D):
 
                 self._elements[x] = {
                     y: self._arr[x][y]
-                    for y in self._cols
-                    if self._arr[x][y] != 0
+                    for y in self._cols if self._arr[x][y] != 0
                 }
                 return
 
             for x in _slice_to_range(idx):
                 self._elements[x] = {
                     y: self._arr[x][y]
-                    for y in self._cols
-                    if self._arr[x][y] != 0
+                    for y in self._cols if self._arr[x][y] != 0
                 }
 
     def __repr__(self):

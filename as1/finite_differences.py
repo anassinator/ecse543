@@ -16,8 +16,7 @@ class ElectrostaticProblem(object):
 
     def uniformly_discretize(self, h):
         discretized = UniformlyDiscretizedProblem(
-            self.outer_conductor.width,
-            self.outer_conductor.height, h)
+            self.outer_conductor.width, self.outer_conductor.height, h)
 
         discretized[:] = self.outer_voltage
 
@@ -166,20 +165,15 @@ if __name__ == "__main__":
     # Since this is symmetrical we can just consider the bottom left quadrant
     # of the problem.
     outer_conductor = Rectangle(
-        OUTER_CONDUCTOR_SIZE / 2,
-        OUTER_CONDUCTOR_SIZE / 2,
-        OUTER_CONDUCTOR_SIZE / 4,
-        OUTER_CONDUCTOR_SIZE / 4)
+        OUTER_CONDUCTOR_SIZE / 2, OUTER_CONDUCTOR_SIZE / 2,
+        OUTER_CONDUCTOR_SIZE / 4, OUTER_CONDUCTOR_SIZE / 4)
     inner_conductor = Rectangle(
-        INNER_CONDUCTOR_WIDTH / 2,
-        INNER_CONDUCTOR_HEIGHT / 2,
+        INNER_CONDUCTOR_WIDTH / 2, INNER_CONDUCTOR_HEIGHT / 2,
         (OUTER_CONDUCTOR_SIZE - INNER_CONDUCTOR_WIDTH) / 2,
         (OUTER_CONDUCTOR_SIZE - INNER_CONDUCTOR_HEIGHT) / 2)
-    problem = ElectrostaticProblem(
-        outer_conductor,
-        inner_conductor,
-        OUTER_CONDUCTOR_VOLTAGE,
-        INNER_CONDUCTOR_VOLTAGE)
+    problem = ElectrostaticProblem(outer_conductor, inner_conductor,
+                                   OUTER_CONDUCTOR_VOLTAGE,
+                                   INNER_CONDUCTOR_VOLTAGE)
 
     TARGET_COORDINATE = 0.06, 0.04
 
