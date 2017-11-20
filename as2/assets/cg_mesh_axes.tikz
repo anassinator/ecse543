@@ -1,0 +1,50 @@
+\begin{tikzpicture}
+
+% (0,0) is bottom left and (5,5) is top right.
+
+% Force a specific size.
+\draw[opacity=0] (-1,-1) rectangle (6,6);
+
+% Outer border.
+\draw (0,0) -- (5,0) -- (5,5) -- (0,5) -- cycle;
+
+% Horizontal lines.
+\draw (0,1) -- (5,1);
+\draw (0,2) -- (5,2);
+\draw (0,3) -- (5,3);
+\draw (0,4) -- (5,4);
+
+% Vertical lines.
+\draw (1,0) -- (1,5);
+\draw (2,0) -- (2,5);
+\draw (3,0) -- (3,5);
+\draw (4,0) -- (4,5);
+
+% Fill the inter conductor.
+\filldraw[fill=gray,draw=black] (3,5) rectangle (5,4);
+
+% Darken the outer conductor's edges.
+\draw[line width=2pt] (5,0) -- (0,0) -- (0,5);
+
+% Add coordinate axes.
+\draw[thick,->] (0,0) -- (0,5.5);
+\draw[thick,->] (0,0) -- (5.5,0);
+
+% Axes origin node.
+\draw (-1pt,1pt) -- (1pt,-1pt) node[anchor=north east] {$0.00$};
+
+% X axis nodes.
+\draw (1,1pt) -- (1,-1pt) node[anchor=north] {$0.02$};
+\draw (2,1pt) -- (2,-1pt) node[anchor=north] {$0.04$};
+\draw (3,1pt) -- (3,-1pt) node[anchor=north] {$0.06$};
+\draw (4,1pt) -- (4,-1pt) node[anchor=north] {$0.08$};
+\draw (5,1pt) -- (5,-1pt) node[anchor=north] {$0.10$};
+
+% Y axis nodes.
+\draw (1pt,1) -- (-1pt,1) node[anchor=east] {$0.02$};
+\draw (1pt,2) -- (-1pt,2) node[anchor=east] {$0.04$};
+\draw (1pt,3) -- (-1pt,3) node[anchor=east] {$0.06$};
+\draw (1pt,4) -- (-1pt,4) node[anchor=east] {$0.08$};
+\draw (1pt,5) -- (-1pt,5) node[anchor=east] {$0.10$};
+
+\end{tikzpicture}
