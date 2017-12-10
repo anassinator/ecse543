@@ -186,6 +186,42 @@ V = | 0.1982 |
 
 ![Error vs iteration of multi-variate Newton-Raphson.](assets/newton-raphson-error.png){#fig:newton-error width=75%}
 
+## Question 4
+
+### a
+![Log error vs log segment count of $sin(x)$ Gauss-Legendre integration.](assets/error_sin_x.png){#fig:sin-x-error width=75%}
+
+@fig:sin-x-error depicts the log error. We see that the one-point Gauss-Legendre
+works really well for this function and converges with a very small $N$. This is
+likely due to the fact that this function is symmetrical and doesn't vary widely
+within the range.
+
+### b
+![Log error vs log segment count of $ln(x)$ Gauss-Legendre integration.](assets/error_ln_x.png){#fig:ln-x-error width=75%}
+
+@fig:ln-x-error depicts the log error. We see that the one-point Gauss-Legendre
+does not work as well for this function. The precision $sin(x)$ achieved was not
+reached even with an order of magnitude larger $N$. This is likely due to the
+fact that this function is highly non-linear and only a one-point method was
+used.
+
+### c
+$ln(x)$ varies more widely closer to $x = 0$ than $x = 1$. We can thus have
+denser segments closer to $x = 0$. We opt for a function that is inversely
+proportional to $ln(x)$ to determine the probing points. For $N$ unevenly
+distributed points, the following works very well:
+
+$$
+x_{i} = \left(\frac{i}{N}\right)^e.
+$$
+
+With $N = 10$, we are able to reduce the error from $0.03799$ when using evenly
+distributed segments to $0.00956$.
+
+```
+evenly distributed error: 3.799414E-02
+unevenly distributed error: 9.555142E-03
+```
 
 \newpage
 ## Appendix
@@ -203,6 +239,11 @@ V = | 0.1982 |
 ### `non_linear.py`
 
 \lstinputlisting[language=Python]{non_linear.py}
+
+\newpage
+### `integration.py`
+
+\lstinputlisting[language=Python]{integration.py}
 
 \newpage
 ### `matrix.py`

@@ -316,11 +316,7 @@ class Matrix2D(object):
 
     @classmethod
     def linspace(cls, start, stop=None, steps=100):
-        if stop is None:
-            stop = start
-            start = 0
-
-        x = [start + (stop - start) * x / (steps - 1) for x in range(steps)]
+        x = linspace(start, stop, steps)
         return cls(x).T
 
 
@@ -478,3 +474,14 @@ def _slice_to_range(s):
     stop = s.stop if s.stop is not None else -1
     step = s.step if s.start is not None else 1
     return range(start, stop, step)
+
+
+def linspace(start, stop=None, steps=100):
+    if stop is None:
+        stop = start
+        start = 0
+
+    if steps == 1:
+        return [start, stop]
+
+    return [start + (stop - start) * x / (steps - 1) for x in range(steps)]
