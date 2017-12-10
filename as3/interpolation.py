@@ -70,33 +70,31 @@ def hermite_cubic_interpolator(X, Y):
     return interpolate
 
 
+def piecewise_linear_interpolator(X, Y):
+    def interpolate(x):
+        if isinstance(x, Matrix2D):
+            return x.map(interpolate)
+
+        for i in range(X.rows - 1):
+            if x <= X[i + 1, 0]:
+                break
+
+        x0 = X[i, 0]
+        x1 = X[i + 1, 0]
+
+        y0 = Y[i, 0]
+        y1 = Y[i + 1, 0]
+
+        m = (y1 - y0) / (x1 - x0)
+        y = m * (x - x0) + y0
+
+        return y
+    return interpolate
+
+
 if __name__ == "__main__":
+    from bh_curve import get_data
     import matplotlib.pyplot as plt
-
-    data = {
-        0.0: 0.0,
-        0.2: 14.7,
-        0.4: 36.5,
-        0.6: 71.7,
-        0.8: 121.4,
-        1.0: 197.4,
-        1.1: 256.2,
-        1.2: 348.7,
-        1.3: 540.6,
-        1.4: 1062.8,
-        1.5: 2318.0,
-        1.6: 4781.9,
-        1.7: 8687.4,
-        1.8: 13924.3,
-        1.9: 22650.2,
-    }
-
-    def get_data(indices):
-        X = Matrix2D(indices)
-        Y = Matrix2D.zeros(X.rows, X.cols)
-        for i, x in enumerate(indices):
-            Y[0, i] = data[x]
-        return X.T, Y.T
 
     def plot(b, h, B, H):
         plt.plot(H, B, "r.", label="data points")
