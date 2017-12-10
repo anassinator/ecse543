@@ -155,33 +155,44 @@ $$
 where $J(\textbf{x})$ is the Jacobian of $f(\textbf{x})$. This was iterated
 until:
 
-$
-|f(\textbf{x})| < 10^{-6}.
-$
+$$
+\left|\frac{f(\textbf{x})}{f(\textbf{0})}\right| < 10^{-6}.
+$$
 
-After 4 iterations, the algorithm converged to $v_A = 0.1982$ V and
-$v_B = 0.0905$ V. @fig:newton-error shows that the convergence is indeed
+After 6 iterations, the algorithm converged to $v_A = 0.1981$ V and
+$v_B = 0.0906$ V. @fig:newton-error shows that the convergence is indeed
 quadratic.
 
 ```
 iteration: 1
-V = | 0.2183 |
-    | 0.0728 |
-error: +3.788879E-04
+V = |     0.2183 |
+    |     0.0728 |
+error: +8.611088E-01
+
 iteration: 2
-V = | 0.2057 |
-    | 0.0816 |
-error: +1.119243E-04
+V = |     0.2057 |
+    |     0.0816 |
+error: +2.543734E-01
+
 iteration: 3
-V = | 0.2001 |
-    | 0.0892 |
-error: +1.876091E-05
+V = |     0.2001 |
+    |     0.0892 |
+error: +4.263844E-02
+
 iteration: 4
-V = | 0.1982 |
-    | 0.0905 |
-error: +7.217547E-07
-V = | 0.1982 |
-    | 0.0905 |
+V = |     0.1982 |
+    |     0.0905 |
+error: +1.640352E-03
+
+iteration: 5
+V = |     0.1981 |
+    |     0.0906 |
+error: +2.562020E-06
+
+iteration: 6
+V = |     0.1981 |
+    |     0.0906 |
+error: +6.326535E-12
 ```
 
 ![Error vs iteration of multi-variate Newton-Raphson.](assets/newton-raphson-error.png){#fig:newton-error width=75%}

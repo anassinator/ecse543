@@ -22,7 +22,7 @@ def vector_newton_raphson(f, jac, x, tol=1e-6, max_iter=50, on_iteration=None):
         if on_iteration is not None:
             on_iteration(i + 1, x, f(x))
 
-        if sum(f(x).map(abs).flatten()) <= tol:
+        if sum(f(x).map(abs).flatten()) / sum(f(x0).map(abs).flatten()) <= tol:
             break
 
     return x
@@ -130,7 +130,8 @@ if __name__ == '__main__':
     def on_iteration(i, v, f_v):
         print("iteration:", i)
         v. print(name="V")
-        error = sum(f_v.map(abs).flatten())
+        v0 = Matrix2D.zeros(v.rows, v.cols)
+        error = sum(f(v).map(abs).flatten()) / sum(f(v0).map(abs).flatten())
         print("error: {:+E}".format(error))
         errors.append(error)
 
