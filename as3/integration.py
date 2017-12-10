@@ -35,7 +35,7 @@ if __name__ == '__main__':
         I = gauss_legendre(math.sin, 0, 1, N)
         error = abs(I - truth)
         errors.append((math.log10(N), math.log10(error)))
-    # plot_log_errors(errors)
+    plot_log_errors(errors)
 
     # ln(x)
     truth = -1
@@ -44,14 +44,12 @@ if __name__ == '__main__':
         I = gauss_legendre(math.log, 0, 1, N)
         error = abs(I - truth)
         errors.append((math.log10(N), math.log10(error)))
-    # plot_log_errors(errors)
+    plot_log_errors(errors)
 
     # uneven segments ln(x)
     N = 10
-    xs = [(x / N) ** math.e for x in range(N + 1)]
+    xs = [(x / N)**math.e for x in range(N + 1)]
     I_even = gauss_legendre(math.log, 0, 1, N)
     I_uneven = gauss_legendre(math.log, 0, 1, N, xs)
     print("evenly distributed error: {:E}".format(abs(I_even - truth)))
     print("unevenly distributed error: {:E}".format(abs(I_uneven - truth)))
-
-

@@ -1,6 +1,5 @@
 from matrix import Matrix2D
 
-
 data = {
     0.0: 0.0,
     0.2: 14.7,

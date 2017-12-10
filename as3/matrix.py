@@ -244,7 +244,7 @@ class Matrix2D(object):
             if k != i:
                 A[i], A[k] = A[k], A[i]
                 b[i], b[k] = b[k], b[i]
-                det = -det 
+                det = -det
 
             for j in range(i + 1, A.rows):
                 t = A[j, i] / A[i, i]
@@ -256,7 +256,7 @@ class Matrix2D(object):
         for i in range(A.rows - 1, -1, -1):
             for j in range(i + 1, A.rows):
                 for k in range(b.cols):
-                    b[i, k] -=  A[i, j] * b[j, k]
+                    b[i, k] -= A[i, j] * b[j, k]
             t = 1.0 / A[i, i]
             det *= A[i, i]
             for j in range(b.cols):
@@ -282,8 +282,8 @@ class Matrix2D(object):
         print(" ┐")
 
         for x in range(self.rows):
-            if name is not None and x == int(self.rows / 2):
-                    print(name, "=", end=" ")
+            if name is not None and x == int(self.rows / 2) - 1:
+                print(name, "=", end=" ")
             else:
                 print(front_spacing, end="")
 
@@ -310,8 +310,8 @@ class Matrix2D(object):
 
     @classmethod
     def eye(cls, n, dtype=float):
-        arr = [[dtype(1.) if i == j else dtype(0.) for i in range(n)]
-               for j in range(n)]
+        arr = [[dtype(1.)
+                if i == j else dtype(0.) for i in range(n)] for j in range(n)]
         return cls(arr, n, n)
 
     @classmethod
@@ -367,14 +367,16 @@ class SparseMatrix2D(Matrix2D):
             else:
                 self._elements[idx] = {
                     i: self._arr[idx][i]
-                    for i in self._cols if self._arr[idx][i] != 0
+                    for i in self._cols
+                    if self._arr[idx][i] != 0
                 }
 
         if isinstance(idx, slice):
             for x in _slice_to_range(idx):
                 self._elements[x] = {
                     y: self._arr[x][y]
-                    for y in self._cols if self._arr[x][y] != 0
+                    for y in self._cols
+                    if self._arr[x][y] != 0
                 }
 
         if isinstance(idx, tuple):
@@ -388,14 +390,16 @@ class SparseMatrix2D(Matrix2D):
 
                 self._elements[x] = {
                     y: self._arr[x][y]
-                    for y in self._cols if self._arr[x][y] != 0
+                    for y in self._cols
+                    if self._arr[x][y] != 0
                 }
                 return
 
             for x in _slice_to_range(idx):
                 self._elements[x] = {
                     y: self._arr[x][y]
-                    for y in self._cols if self._arr[x][y] != 0
+                    for y in self._cols
+                    if self._arr[x][y] != 0
                 }
 
     def __repr__(self):

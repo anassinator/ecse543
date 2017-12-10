@@ -4,6 +4,7 @@ from matrix import Matrix2D
 
 
 def lagrange_interpolator(X, Y):
+
     def multiplier(j, x):
         if isinstance(x, Matrix2D):
             y = Matrix2D.ones(x.rows, x.cols)
@@ -30,6 +31,7 @@ def lagrange_interpolator(X, Y):
 
 
 def hermite_cubic_interpolator(X, Y):
+
     def get_coeffs(x0, x1, y0, y1, dy0_dx, dy1_dx):
         A = Matrix2D([
             [x0**3, x0**2, x0, 1.0],
@@ -71,6 +73,7 @@ def hermite_cubic_interpolator(X, Y):
 
 
 def piecewise_linear_interpolator(X, Y):
+
     def interpolate(x):
         if isinstance(x, Matrix2D):
             return x.map(interpolate)
@@ -89,6 +92,7 @@ def piecewise_linear_interpolator(X, Y):
         y = m * (x - x0) + y0
 
         return y
+
     return interpolate
 
 
@@ -110,8 +114,8 @@ if __name__ == "__main__":
     print("a")
     indices = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
     X, Y = get_data(indices)
-    X.print(name="X")
-    Y.print(name="Y")
+    X. print(name="X")
+    Y. print(name="Y")
     interp = lagrange_interpolator(X, Y)
     y_test = interp(x_test)
     plot(x_test, y_test, X, Y)
@@ -120,8 +124,8 @@ if __name__ == "__main__":
     print("b")
     indices = [0.0, 1.3, 1.4, 1.7, 1.8, 1.9]
     X, Y = get_data(indices)
-    X.print(name="X")
-    Y.print(name="Y")
+    X. print(name="X")
+    Y. print(name="Y")
     interp = lagrange_interpolator(X, Y)
     y_test = interp(x_test)
     plot(x_test, y_test, X, Y)
@@ -130,8 +134,8 @@ if __name__ == "__main__":
     print("c")
     indices = [0.0, 1.3, 1.4, 1.7, 1.8, 1.9]
     X, Y = get_data(indices)
-    X.print(name="X")
-    Y.print(name="Y")
+    X. print(name="X")
+    Y. print(name="Y")
     interp = hermite_cubic_interpolator(X, Y)
     y_test = interp(x_test)
     plot(x_test, y_test, X, Y)

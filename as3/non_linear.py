@@ -14,8 +14,7 @@ def newton_raphson(f, f_prime, x, tol=1e-6, max_iter=50, on_iteration=None):
     return x
 
 
-def vector_newton_raphson(f, jac, x, tol=1e-6, max_iter=50,
-                          on_iteration=None):
+def vector_newton_raphson(f, jac, x, tol=1e-6, max_iter=50, on_iteration=None):
     x0 = Matrix2D.zeros(x.rows, x.cols)
     for i in range(max_iter):
         x -= jac(x).inverse().dot(f(x))
@@ -29,7 +28,11 @@ def vector_newton_raphson(f, jac, x, tol=1e-6, max_iter=50,
     return x
 
 
-def successive_substitution(f, x, tol=1e-6, max_iter=50, c=6.5e-9,
+def successive_substitution(f,
+                            x,
+                            tol=1e-6,
+                            max_iter=50,
+                            c=6.5e-9,
                             on_iteration=None):
     for i in range(max_iter):
         x -= c * f(x)
@@ -101,22 +104,32 @@ if __name__ == '__main__':
         v1 = v[0, 0]
         v2 = v[1, 0]
         return Matrix2D([
-            [1/R * v1 - E/R + I_sA * (math.exp((v1 - v2) / vT) - 1)],
-            [I_sB * (math.exp(v2 / vT) - 1) - I_sA * (math.exp((v1 - v2) / vT) - 1)],
+            [1 / R * v1 - E / R + I_sA * (math.exp((v1 - v2) / vT) - 1)],
+            [
+                I_sB * (math.exp(v2 / vT) - 1) - I_sA * (math.exp(
+                    (v1 - v2) / vT) - 1)
+            ],
         ])
 
     def fprime(v):
         v1 = v[0, 0]
         v2 = v[1, 0]
         return Matrix2D([
-            [1/R + I_sA / vT * math.exp((v1 - v2) / vT), -I_sA / vT * math.exp((v1 - v2) / vT)],
-            [-I_sA / vT * math.exp((v1 - v2) / vT), (I_sA * math.exp((v1 - v2) / vT) + I_sB * math.exp(v2 / vT)) / vT],
+            [
+                1 / R + I_sA / vT * math.exp((v1 - v2) / vT),
+                -I_sA / vT * math.exp((v1 - v2) / vT)
+            ],
+            [
+                -I_sA / vT * math.exp((v1 - v2) / vT), (I_sA * math.exp(
+                    (v1 - v2) / vT) + I_sB * math.exp(v2 / vT)) / vT
+            ],
         ])
 
     errors = []
+
     def on_iteration(i, v, f_v):
         print("iteration:", i)
-        v.print(name="V")
+        v. print(name="V")
         error = sum(f_v.map(abs).flatten())
         print("error: {:+E}".format(error))
         errors.append(error)
@@ -131,5 +144,5 @@ if __name__ == '__main__':
     print("Question 3")
     v = Matrix2D.zeros(2, 1)
     v = vector_newton_raphson(f, fprime, v, on_iteration=on_iteration)
-    v.print(name="V")
+    v. print(name="V")
     plot(errors)
