@@ -226,7 +226,7 @@ class Matrix2D(object):
         return m
 
     def inverse(self):
-        if not self.is_square:
+        if not self.is_square():
             raise ValueError("matrix is not square")
         return self.solve(Matrix2D.eye(self._cols))
 

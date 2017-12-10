@@ -110,6 +110,83 @@ iteration: 9, x = 1.612691E-04, f(x) = -5.863349E-03
 Magnetic flux = 1.612691E-04 Wb
 ```
 
+## Question 3
+
+### a
+We have:
+
+$$
+\begin{aligned}
+A &= \begin{bmatrix}
+  1 & -1 & 0 \\
+  0 & 1 & -1 \\
+\end{bmatrix} \\
+Y &= \begin{bmatrix}
+  \frac{1}{R} & 0 & 0 \\
+  0 & 0 & 0 \\
+  0 & 0 & 0 \\
+\end{bmatrix} \\
+E &= \begin{bmatrix}
+  -E \\
+  0 \\
+  0 \\
+\end{bmatrix} \\
+J(v_A, v_B) &= J(\textbf{v}) = \begin{bmatrix}
+  0 \\
+  I_{sA} \left(e^{\frac{v_A - v_B}{v_T}} - 1\right) \\
+  I_{sB} \left(e^{\frac{v_B}{v_T}} - 1\right) \\
+\end{bmatrix}.
+\end{aligned}
+$$
+
+Putting it together, yields the following non-linear equation:
+
+$$
+f(v_A, v_B) = f(\textbf{v}) = (AYA^T)\textbf{v} - A(J(\textbf{v}) - YE) = 0. 
+$$
+
+### b
+Multi-variate Newton-Raphson was implemented with the following iteration step:
+
+$$
+\textbf{x}_{i+1} = \textbf{x}_{i} - J(\textbf{x}_{i}) f(\textbf{x}_{i}),
+$$
+
+where $J(\textbf{x})$ is the Jacobian of $f(\textbf{x})$. This was iterated
+until:
+
+$
+|f(\textbf{x})| < 10^{-6}.
+$
+
+After 4 iterations, the algorithm converged to $v_A = 0.1982$ V and
+$v_B = 0.0905$ V. @fig:newton-error shows that the convergence is indeed
+quadratic.
+
+```
+iteration: 1
+V = | 0.2183 |
+    | 0.0728 |
+error: +3.788879E-04
+iteration: 2
+V = | 0.2057 |
+    | 0.0816 |
+error: +1.119243E-04
+iteration: 3
+V = | 0.2001 |
+    | 0.0892 |
+error: +1.876091E-05
+iteration: 4
+V = | 0.1982 |
+    | 0.0905 |
+error: +7.217547E-07
+V = | 0.1982 |
+    | 0.0905 |
+```
+
+![Error vs iteration of multi-variate Newton-Raphson.](assets/newton-raphson-error.png){#fig:newton-error width=75%}
+
+
 \newpage
 ## Appendix
 
